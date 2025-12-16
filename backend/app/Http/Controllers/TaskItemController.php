@@ -67,7 +67,8 @@ class TaskItemController extends Controller
     {
         $validated = $request->validate([
             'task_id' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'is_done' => 'sometimes'
         ]);
 
         $taskItem = TaskItem::query()->findOrFail($id);

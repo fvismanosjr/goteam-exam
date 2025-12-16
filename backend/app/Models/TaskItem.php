@@ -10,7 +10,7 @@ class TaskItem extends Model
 {
     use SoftDeletes;
     
-    protected $fillable = ['task_id', 'description'];
+    protected $fillable = ['task_id', 'description', 'is_done'];
 
     /**
      * Get the task that owns the task item.
