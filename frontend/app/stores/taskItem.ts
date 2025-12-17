@@ -3,6 +3,18 @@ import type { TaskItemType } from "~/types/types";
 export const useTaskItemStore = defineStore("taskItems", () => {
     const taskItems = ref<TaskItemType[]>([]);
 
+    const searchString = ref("");
+
+    const filteredItems = computed(() => {
+        const query = searchString.value.toLowerCase().trim();
+
+        if (!query) return taskItems.value;
+
+        return taskItems.value.filter(item =>
+            item.description.toLowerCase().includes(query)
+        );
+    });
+
     const addItem = (payload: TaskItemType) => {
         taskItems.value.push(payload);
     }
@@ -23,11 +35,18 @@ export const useTaskItemStore = defineStore("taskItems", () => {
         })
     }
 
+    const reOrderItems = (newOrder: TaskItemType[]) => {
+        taskItems.value = newOrder
+    }
+
     return {
         taskItems,
+        searchString,
+        filteredItems,
         addItem,
         updateItem,
         removeItem,
+        reOrderItems,
     }
 }, {
     persist: false

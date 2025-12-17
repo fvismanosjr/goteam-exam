@@ -11,7 +11,7 @@ class TaskItem extends Model
 {
     use HasFactory, SoftDeletes;
     
-    protected $fillable = ['task_id', 'description', 'is_done'];
+    protected $fillable = ['task_id', 'description', 'is_done', 'priority'];
 
     /**
      * Get the task that owns the task item.

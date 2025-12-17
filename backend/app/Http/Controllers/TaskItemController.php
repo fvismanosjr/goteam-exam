@@ -34,12 +34,19 @@ class TaskItemController extends Controller
      */
     public function store(Request $request, string $taskId)
     {
+        Task::with('taskItems')->findOrFail($taskId);
+        $maxItem = TaskItem::query()->where("task_id", $taskId)->max("priority");
+
         $validated = $request->validate([
             'task_id' => 'required',
             'description' => 'required'
         ]);
 
-        $taskItem = TaskItem::query()->create($validated);
+        $merge = array_merge($validated, [
+            'priority' => $maxItem + 1
+        ]);
+
+        $taskItem = TaskItem::query()->create($merge);
 
         return response()->json($taskItem, 201);
     }
@@ -49,6 +56,8 @@ class TaskItemController extends Controller
      */
     public function show(string $id, string $taskId)
     {
+        Task::query()->findOrFail($taskId);
+
         return TaskItem::query()->find($id);
     }
 
@@ -65,6 +74,8 @@ class TaskItemController extends Controller
      */
     public function update(Request $request, string $taskId, string $id)
     {
+        Task::query()->findOrFail($taskId);
+
         $validated = $request->validate([
             'task_id' => 'required',
             'description' => 'required',
@@ -82,9 +93,34 @@ class TaskItemController extends Controller
      */
     public function destroy(string $taskId, string $id)
     {
+        Task::query()->findOrFail($taskId);
+        
         $taskItem = TaskItem::query()->findOrFail($id);
         $taskItem->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function sort(Request $request)
+    {
+        $request->validate([
+            'task_id' => 'required',
+            'newItemOrder' => 'required'
+        ]);
+
+        $newOrder = $request->get('newItemOrder');
+
+        foreach ($newOrder as $key => $item) {
+            $taskItem = TaskItem::query()->findOrFail($item['id']);
+            $taskItem->update([
+                'priority' => $key
+            ]);
+        }
+
+        $tasks = Task::with('taskItems')->findOrFail($request->get('task_id'));
+
+        return response()->json([
+            'taskItems' => $tasks->taskItems
+        ]);
     }
 }

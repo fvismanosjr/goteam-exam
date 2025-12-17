@@ -18,6 +18,8 @@ class Task extends Model
      */
     public function taskItems(): HasMany
     {
-        return $this->hasMany(TaskItem::class);
+        return $this->hasMany(TaskItem::class)
+                ->orderBy('priority', 'asc')
+                ->orderBy('id', 'asc');
     }
 }

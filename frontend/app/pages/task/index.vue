@@ -12,13 +12,6 @@ useHead({
 
 const taskStore = useTaskStore();
 const taskItemListKey = ref(0);
-const taskId = ref(0);
-
-const showTaskList = (val: number) => {
-    taskId.value = val;
-    taskItemListKey.value++;
-}
-
 watch(() => taskStore.currentTask, (newvalue, oldvalue) => {
 
     if (oldvalue) {

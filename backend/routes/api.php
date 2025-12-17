@@ -10,6 +10,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
+    Route::post('task-item-sort', [TaskItemController::class, 'sort']);
     Route::resource('tasks', TaskController::class);
     Route::resource('tasks.items', TaskItemController::class);
 });

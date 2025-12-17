@@ -18,18 +18,23 @@ const showTasks = async () => {
 }
 
 const updateCurrentTask = (task: TaskType) => {
-    task.active = true;
     taskStore.currentTask = task;
 }
 
 onMounted(() => {
     showTasks().then((result: TaskResponseType) => {
         taskStore.tasks = result.tasks.map((task) => {
-            return {
+            const formattedTask = {
                 ...task,
                 active: false,
                 created_at: formatDate(task.created_at)
             }
+
+            if (isDateToday(task.created_at)) {
+                taskStore.currentTask = task;
+            }
+
+            return formattedTask
         })
     });
 })
@@ -43,7 +48,7 @@ onMounted(() => {
                     <SidebarMenu>
                         <SidebarMenuItem v-for="task in taskStore.tasks" :key="task.id">
                             <SidebarMenuButton 
-                                :class="{ 'bg-primary text-white hover:bg-primary hover:text-white' : task.active }"
+                                :class="{ 'bg-primary text-white hover:bg-primary hover:text-white' : task.id == taskStore.currentTask.id }"
                                 @click.prevent="updateCurrentTask(task)"
                             >
                                 {{ task.created_at }}

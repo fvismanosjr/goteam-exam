@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { getCookie } from '~/lib/utils';
 import { useUserStore } from '~/stores/user';
+import { useTaskItemStore } from '~/stores/taskItem';
 
 const userStore = useUserStore();
+const taskItemStore = useTaskItemStore();
 
 const logout = async () => {
     await fetch('http://localhost/logout', {
@@ -21,6 +23,18 @@ const logout = async () => {
         <div class="">
             <LucideShell class="size-8" />
         </div>
+        <div class="w-1/4">
+            <InputGroup>
+                <InputGroupInput placeholder="Search..." v-model="taskItemStore.searchString"/>
+                <InputGroupAddon>
+                    <LucideSearch />
+                </InputGroupAddon>
+                <InputGroupAddon align="inline-end">
+                    12 results
+                </InputGroupAddon>
+            </InputGroup>
+        </div>
+        
         <div class="relative">
             <DropdownMenu>
                 <DropdownMenuTrigger as-child>
